@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Cache build dependencies
+nix path-info -r --json .# | jq -r '.[].deriver' | cachix push meowgorithm
+
+# Cache dev shell dependencies
+nix develop --profile website-dev-profile
+cachix push meowgorithm website-dev-profile
