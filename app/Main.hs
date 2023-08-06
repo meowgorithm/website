@@ -270,15 +270,15 @@ homePage staticFiles =
 -- Helpers
 
 exitWithErrorMessage :: String -> IO a
-exitWithErrorMessage msg =
-    putStrLn ("[FATAL] " <> msg) >> exitFailure
+exitWithErrorMessage =
+    (>> exitFailure) . putStrLn . ("[FATAL] " <>)
 
 
 logInfo :: String -> IO ()
-logInfo msg =
-    putStrLn $ "[INFO] " <> msg
+logInfo =
+    putStrLn . ("[INFO] " <>)
 
 
 logWarn :: String -> IO ()
-logWarn msg =
-    putStrLn $ "[WARN] " <> msg
+logWarn =
+    putStrLn . ("[WARN] " <>)
