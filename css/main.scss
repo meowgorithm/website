@@ -1,2 +1,16 @@
 @import "reset";
 @import "mixins";
+
+:root {
+  font-size: 18px;
+}
+
+body {
+  color: #06b24f;
+  background-color: #fdfbee;
+  padding: 5rem 6rem;
+}
+h1,
+p {
+  margin-bottom: 1rem;
+}

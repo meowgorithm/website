@@ -20,7 +20,7 @@ import Data.Text.Lazy qualified as LazyText
 import GHC.IO.Handle.Types (Handle)
 import Main.Utf8 (withUtf8)
 import Network.HTTP.Types (forbidden403, internalServerError500, notFound404)
-import Network.Wai.Handler.Warp as Warp
+import Network.Wai.Handler.Warp as Warp (defaultSettings, setPort)
 import Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 import Network.Wai.Middleware.Static qualified as Static
 import System.Directory (createDirectoryIfMissing, doesFileExist)
@@ -170,6 +170,7 @@ data Except
 
 
 instance S.ScottyError Except where
+    stringError :: String -> Except
     stringError = Error
     showError = fromString . show
 
@@ -262,9 +263,20 @@ internalServerErrorPage =
 
 homePage :: StaticFiles -> LazyText.Text
 homePage staticFiles =
-    page staticFiles "" "Hello" $ do
-        H.h1 "Hello"
-        H.p "That's all. Hi!"
+    page staticFiles "" "Hello" $
+        do
+            H.h1 "Christian Rocha"
+            H.p $
+                do
+                    "I’m a polyglot programmer, interdisciplinary designer, and "
+                    <> H.em "hommes d’affaires."
+                    <> " I have founded two venture-backed startups, written some exceptionally popular open-source software, and built some very succesful brands."
+            H.p "I was born in Los Angeles and live in New York."
+            H.ul ! A.class_ "contact" $ do
+                H.li $ H.a ! A.href "https://linkedin.com/in/meowgorithm" $ "LinkedIn"
+                H.li $ H.a ! A.href "https://github.com/meowgorithm" $ "GitHub"
+                H.li $ H.a ! A.href "https://twitter.com/meowgorithm" $ "Twitter"
+                H.li $ H.a ! A.href "https://mastodon.social/@meowgorithm" $ "Mastodon"
 
 
 -- Helpers
