@@ -1,2 +1,36 @@
 @import "reset";
 @import "mixins";
+@import "fonts";
+
+:root {
+  font-size: 22px;
+  --sectraDisplay: "Sectra Display Web", serif;
+  --linearSans: "Linear Sans Web", sans-serif;
+}
+
+body {
+  font: 1rem/120% var(--linearSans);
+  padding: 3rem 4rem;
+}
+a {
+  text-decoration: none;
+}
+h1 {
+  font-size: 1rem;
+}
+h1,
+p {
+  margin-bottom: 1rem;
+}
+h1 + p {
+  font: 2.15rem/115% var(--sectraDisplay);
+}
+.contact li {
+  display: inline;
+}
+.contact li::after {
+  content: "—";
+}
+.contact li:last-child::after {
+  content: "";
+}

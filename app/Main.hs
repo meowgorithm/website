@@ -263,8 +263,17 @@ internalServerErrorPage =
 homePage :: StaticFiles -> LazyText.Text
 homePage staticFiles =
     page staticFiles "" "Hello" $ do
-        H.h1 "Hello"
-        H.p "That's all. Hi!"
+        H.h1 "Christian Rocha"
+        H.p $
+            "I’m an "
+                <> H.em "homme d’affaires"
+                <> " and creative "
+                <> H.em "tour de force."
+                <> " I’ve founded two venture-backed companies, built very popular open source software, and created brands that people adore."
+        H.ul ! A.class_ "contact" $ do
+            H.li $ H.a ! A.href "https://linkedin.com/in/meowgorithm" $ "LinkedIn"
+            H.li $ H.a ! A.href "https://github.com/meowgorithm" $ "GitHub"
+            H.li $ H.a ! A.href "https://x.com/meowgorithm" $ "X/Twitter"
 
 
 -- Helpers

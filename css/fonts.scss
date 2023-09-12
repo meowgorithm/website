@@ -1,0 +1,58 @@
+$bucketUrl: "https://static.rocha.is/fonts/";
+
+$sectraPath: $bucketUrl + "sectra/";
+
+@font-face {
+  font-family: "Sectra Display Web";
+  font-weight: 400;
+  src:
+    url($sectraPath + "GT-Sectra-Display-Medium.woff2") format("woff2"),
+    url($sectraPath + "GT-Sectra-Display-Medium.woff") format("woff"),
+    url($sectraPath + "GT-Sectra-Display-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sectra Display Web";
+  font-weight: 400;
+  font-style: italic;
+  src:
+    url($sectraPath + "GT-Sectra-Display-Medium-Italic.woff2") format("woff2"),
+    url($sectraPath + "GT-Sectra-Display-Medium-Italic.woff") format("woff"),
+    url($sectraPath + "GT-Sectra-Display-Medium-Italic.ttf") format("truetype");
+}
+
+$linearPath: $bucketUrl + "linear-sans/";
+
+@font-face {
+  font-family: "Linear Sans Web";
+  font-weight: 400;
+  src:
+    url($linearPath + "linearsans-regular-webfont.woff2") format("woff2"),
+    url($linearPath + "linearsans-regular-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Linear Sans Web";
+  font-weight: 400;
+  font-style: italic;
+  src:
+    url($linearPath + "linearsans-italic-webfont.woff2") format("woff2"),
+    url($linearPath + "linearsans-italic-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Linear Sans Web";
+  font-weight: 700;
+  src:
+    url($linearPath + "linearsans-bold-webfont.woff2") format("woff2"),
+    url($linearPath + "linearsans-bold-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Linear Sans Web";
+  font-weight: 700;
+  font-style: italic;
+  src:
+    url($linearPath + "linearsans-bold-italic-webfont.woff2") format("woff2"),
+    url($linearPath + "linearsans-bold-italic-webfont.woff") format("woff");
+}
