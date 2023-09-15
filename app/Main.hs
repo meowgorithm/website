@@ -265,11 +265,18 @@ homePage staticFiles =
     page staticFiles "" "Hello" $ do
         H.h1 "Christian Rocha"
         H.p $
-            "I’m an "
+            "Christian is an "
                 <> H.em "homme d’affaires"
                 <> " and creative "
-                <> H.em "tour de force."
-                <> " I’ve founded two venture-backed companies, built very popular open source software, and created brands that people adore."
+                <> H.em "tour de force"
+                <> " who blurs the lines between business, art, design, and technology. "
+                <> "He believes these disciplines go hand in hand by the nature of the practice."
+        H.p "He has founded two venture-backed companies, built very popular open source software, and created brands with cult-like followings."
+        H.p $
+            "Christian is currently a co-founder of "
+                <> (H.a ! A.href "https://charm.sh/" $ "Charm")
+                <> "."
+        H.p "Christian was born in Los Angeles and live and works in New York."
         H.ul ! A.class_ "contact" $ do
             H.li $ H.a ! A.href "https://linkedin.com/in/meowgorithm" $ "LinkedIn"
             H.li $ H.a ! A.href "https://github.com/meowgorithm" $ "GitHub"

@@ -9,21 +9,22 @@
 }
 
 body {
-  font: 1rem/120% var(--linearSans);
+  font: 0.9rem/120% var(--linearSans);
   padding: 3rem 4rem;
 }
 a {
   text-decoration: none;
 }
 h1 {
-  font-size: 1rem;
+  font-size: inherit;
 }
 h1,
 p {
   margin-bottom: 1rem;
 }
-h1 + p {
-  font: 2.15rem/115% var(--sectraDisplay);
+h1 + p,
+p + p {
+  font: 2.15rem/108% var(--sectraDisplay);
 }
 .contact li {
   display: inline;
