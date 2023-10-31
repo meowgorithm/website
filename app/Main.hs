@@ -1,26 +1,29 @@
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StrictData #-}
 {-# LANGUAGE NoFieldSelectors #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 module Main where
 
 import Control.Concurrent.Async (Concurrently (..))
-import Control.Exception (try)
+import Control.Exception (Exception, try)
 import Control.Monad (void, when)
+import Control.Monad.IO.Class (MonadIO)
 import Crypto.Hash (Digest, SHA256, hashlazy)
 import Data.ByteString.Lazy (ByteString, readFile, writeFile)
 import Data.Function ((&))
 import Data.Map qualified as Map
-import Data.String (fromString)
 import Data.String.Conversions (convertString)
 import Data.Text (Text)
 import Data.Text.Lazy qualified as LazyText
+import Data.Typeable (Typeable)
 import GHC.IO.Handle.Types (Handle)
 import Main.Utf8 (withUtf8)
 import Network.HTTP.Types (forbidden403, internalServerError500, notFound404)
-import Network.Wai.Handler.Warp as Warp
+import Network.Wai.Handler.Warp as Warp (defaultSettings, setPort)
 import Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 import Network.Wai.Middleware.Static qualified as Static
 import System.Directory (createDirectoryIfMissing, doesFileExist)
@@ -166,21 +169,15 @@ data Except
     = Forbidden
     | NotFound
     | Error String
-    deriving (Show, Eq)
-
-
-instance S.ScottyError Except where
-    stringError = Error
-    showError = fromString . show
+    deriving (Show, Eq, Typeable, Exception)
 
 
 -- | HTTP exception handling.
-handleException :: (Monad m) => Except -> S.ActionT Except m ()
-handleException except =
-    case except of
-        Forbidden -> S.status forbidden403 >> S.html forbiddenPage
-        NotFound -> S.status notFound404 >> S.html notFoundPage
-        Error _ -> S.status internalServerError500 >> S.html internalServerErrorPage
+handleException :: (MonadIO m) => S.ErrorHandler m
+handleException = S.Handler $ \case
+    Forbidden -> S.status forbidden403 >> S.html forbiddenPage
+    NotFound -> S.status notFound404 >> S.html notFoundPage
+    Error _ -> S.status internalServerError500 >> S.html internalServerErrorPage
 
 
 runWebserver :: Config -> IO ()
@@ -202,7 +199,7 @@ runWebserver cfg =
                 }
 
 
-webserver :: Config -> S.ScottyT Except IO ()
+webserver :: Config -> S.ScottyT IO ()
 webserver cfg = do
     S.middleware (if cfg.debug then logStdoutDev else logStdout)
     S.middleware Static.static
@@ -212,7 +209,7 @@ webserver cfg = do
         S.html $ homePage cfg.staticFiles
 
     S.notFound $
-        S.raise NotFound
+        S.raiseStatus notFound404 "Not Found"
 
 
 -- Pages

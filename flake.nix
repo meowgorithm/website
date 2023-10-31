@@ -16,7 +16,11 @@
 
       pkgs = nixpkgs.legacyPackages.${system};
 
-      haskellPackages = pkgs.haskell.packages.${ghcVersion};
+      haskellPackages = pkgs.haskell.packages.${ghcVersion}.override {
+        overrides = self: super: {
+          scotty = pkgs.haskell.lib.dontCheck (self.callHackage "scotty" "0.20.1" {});
+        };
+      };
 
       static = pkgs.buildNpmPackage {
         name = "static";
