@@ -80,7 +80,7 @@ executable webserver
     , http-types
     , mr-env
     , process
-    , scotty
+    , scotty                 ==0.12.1
     , string-conversions
     , text
     , text-conversions
