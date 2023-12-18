@@ -7,7 +7,7 @@
     "build": "parcel build js/main.ts --dist-dir static --public-url /"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "2.9.3",
-    "parcel": "2.9.3"
+    "@parcel/transformer-sass": "2.10.3",
+    "parcel": "2.10.3"
   }
 }
