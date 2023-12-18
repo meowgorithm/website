@@ -50,7 +50,7 @@ main = withUtf8 $ do
         runConcurrently $
             (,,)
                 <$> Concurrently (runWebserver cfg)
-                <*> Concurrently (when (cfg.debug) $ void buildFrontend)
+                <*> Concurrently (when cfg.debug $ void buildFrontend)
     return ()
 
 
@@ -190,7 +190,7 @@ runWebserver cfg =
         newCfg =
             if cfg.debug
                 then cfg
-                else cfg{staticFilesSources = (cfg.staticFilesSources) ++ ["static/main.css", "static/main.js"]}
+                else cfg{staticFilesSources = cfg.staticFilesSources ++ ["static/main.css", "static/main.js"]}
 
         opts =
             S.Options
