@@ -101,15 +101,15 @@ type StaticFiles = Map.Map Text Text
 -- | Hash static files and write them to the static file directory.
 hashStaticFiles :: Config -> IO StaticFiles
 hashStaticFiles cfg =
-    mapM (hashFile cfg.staticDir) cfg.staticFilesSources >>= \hashes ->
+    mapM (getHashAndWriteFile cfg.staticDir) cfg.staticFilesSources >>= \hashes ->
         pure $ Map.fromList $ zip cfg.staticFilesSources hashes
 
 
 {-| Hash a file and write the file to disk with the hash in the filename.
  Errors fatally if a file cannot be hashed.
 -}
-hashFile :: Text -> Text -> IO Text
-hashFile outputPath pathToFile =
+getHashAndWriteFile :: Text -> Text -> IO Text
+getHashAndWriteFile outputPath pathToFile =
     logInfo ("Hashing " <> path <> "...")
         >> tryReading path
         >>= \case
