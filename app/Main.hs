@@ -30,6 +30,7 @@ import System.Directory (createDirectoryIfMissing, doesFileExist)
 import System.Environment.MrEnv (envAsBool, envAsInt)
 import System.Exit (exitFailure)
 import System.FilePath (joinPath, takeBaseName, takeExtension)
+import System.IO (hPutStrLn, stderr)
 import System.Process (ProcessHandle, createProcess, proc)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 ((!))
@@ -44,7 +45,7 @@ import Prelude hiding (readFile, writeFile)
 main :: IO ()
 main = withUtf8 $ do
     cfg <- getConfig "ROCHA_"
-    print cfg
+    printLnToStderr $ show cfg
     logInfo $ "もしもし? Running webserver on port " ++ show cfg.port
     _ <-
         runConcurrently $
@@ -284,14 +285,19 @@ homePage staticFiles =
 
 exitWithErrorMessage :: String -> IO a
 exitWithErrorMessage =
-    (>> exitFailure) . putStrLn . ("[FATAL] " <>)
+    (>> exitFailure) . printLnToStderr . ("[FATAL] " <>)
 
 
 logInfo :: String -> IO ()
 logInfo =
-    putStrLn . ("[INFO] " <>)
+    printLnToStderr . ("[INFO] " <>)
 
 
 logWarn :: String -> IO ()
 logWarn =
-    putStrLn . ("[WARN] " <>)
+    printLnToStderr . ("[WARN] " <>)
+
+
+printLnToStderr :: String -> IO ()
+printLnToStderr =
+    hPutStrLn stderr
