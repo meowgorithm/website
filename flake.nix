@@ -2,7 +2,7 @@
   description = "";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -12,13 +12,13 @@
     flake-utils,
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      ghcVersion = "ghc947";
+      ghcVersion = "ghc982";
 
       pkgs = nixpkgs.legacyPackages.${system};
 
       haskellPackages = pkgs.haskell.packages.${ghcVersion}.override {
         overrides = self: super: {
-          scotty = pkgs.haskell.lib.dontCheck (self.callHackage "scotty" "0.20.1" {});
+          scotty = pkgs.haskell.lib.dontCheck (self.callHackage "scotty" "0.22" {});
         };
       };
 

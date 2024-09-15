@@ -21,7 +21,6 @@ import Data.Text (Text)
 import Data.Text.Lazy qualified as LazyText
 import Data.Typeable (Typeable)
 import GHC.IO.Handle.Types (Handle)
-import Main.Utf8 (withUtf8)
 import Network.HTTP.Types (forbidden403, internalServerError500, notFound404)
 import Network.Wai.Handler.Warp as Warp (defaultSettings, setPort)
 import Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
@@ -43,7 +42,7 @@ import Prelude hiding (readFile, writeFile)
 -- Main
 
 main :: IO ()
-main = withUtf8 $ do
+main = do
     cfg <- getConfig "ROCHA_"
     printLnToStderr $ show cfg
     logInfo $ "もしもし? Running webserver on port " ++ show cfg.port
@@ -210,7 +209,7 @@ webserver cfg = do
         S.html $ homePage cfg.staticFiles
 
     S.notFound $
-        S.raiseStatus notFound404 "Not Found"
+        S.status notFound404
 
 
 -- Pages
