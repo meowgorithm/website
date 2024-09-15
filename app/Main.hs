@@ -270,7 +270,7 @@ homePage staticFiles =
                 <> "He believes these disciplines go hand in hand by the nature of the practice."
         H.p "He has founded two venture-backed companies, built very popular open source software, and created brands with cult-like followings."
         H.p $
-            "Christian is currently a co-founder of "
+            "Christian is currently the founder and CEO of "
                 <> (H.a ! A.href "https://charm.sh/" $ "Charm")
                 <> "."
         H.p "Christian was born in Los Angeles and live and works in New York."
@@ -278,6 +278,7 @@ homePage staticFiles =
             H.li $ H.a ! A.href "https://linkedin.com/in/meowgorithm" $ "LinkedIn"
             H.li $ H.a ! A.href "https://github.com/meowgorithm" $ "GitHub"
             H.li $ H.a ! A.href "https://x.com/meowgorithm" $ "X/Twitter"
+        H.p $ H.text $ "Copyright © " <> convertString (toRoman 2024) <> " Christian Rocha"
 
 
 -- Helpers
@@ -300,3 +301,29 @@ logWarn =
 printLnToStderr :: String -> IO ()
 printLnToStderr =
     hPutStrLn stderr
+
+
+-- Convert an integer to Roman numerals.
+toRoman :: Int -> String
+toRoman n = f n numerals
+    where
+        numerals =
+            [ (1000, "M")
+            , (900, "CM")
+            , (500, "D")
+            , (400, "CD")
+            , (100, "C")
+            , (90, "XC")
+            , (50, "L")
+            , (40, "XL")
+            , (10, "X")
+            , (9, "IX")
+            , (5, "V")
+            , (4, "IV")
+            , (1, "I")
+            ]
+        f 0 _ = ""
+        f n' ((value, numeral) : rest)
+            | n' >= value = numeral ++ f (n' - value) ((value, numeral) : rest)
+            | otherwise = f n' rest
+        f _ [] = ""
