@@ -95,6 +95,9 @@ getConfig prefix =
 
 -- Static Files
 
+{-| A map of static files with their original paths as keys and hashed paths
+ as values.
+-}
 type StaticFiles = Map.Map Text Text
 
 
