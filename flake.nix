@@ -25,7 +25,7 @@
       static = pkgs.buildNpmPackage {
         name = "static";
         src = ./.;
-        npmDepsHash = "sha256-Yu8AZGsEryACdrQC1bq/LhBBCANhEMnCV6hCWggU/KI=";
+        npmDepsHash = "sha256-bAZxvUj/rjMBPvPHQpzY2xN1NaqUpx7XNzL0/m/IluA="; # pkgs.lib.fakeHash;
         installPhase = ''
           mkdir $out
           cp -r static/ $out
