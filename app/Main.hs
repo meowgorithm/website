@@ -9,27 +9,22 @@
 module Main where
 
 import Control.Concurrent.Async (Concurrently (..))
-import Control.Exception (Exception, try)
+import Control.Exception (Exception)
 import Control.Monad (void, when)
 import Control.Monad.IO.Class (MonadIO)
-import Crypto.Hash (Digest, SHA256, hashlazy)
-import Data.ByteString.Lazy (ByteString, readFile, writeFile)
-import Data.Function ((&))
 import Data.Map qualified as Map
 import Data.String.Conversions (convertString)
 import Data.Text (Text)
 import Data.Text.Lazy qualified as LazyText
 import Data.Typeable (Typeable)
 import GHC.IO.Handle.Types (Handle)
+import Log (exitWithErrorMessage, logInfo, printLnToStderr)
 import Network.HTTP.Types (forbidden403, internalServerError500, notFound404)
 import Network.Wai.Handler.Warp as Warp (defaultSettings, setPort)
 import Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
 import Network.Wai.Middleware.Static qualified as Static
-import System.Directory (createDirectoryIfMissing, doesFileExist)
+import Static (hashFiles)
 import System.Environment.MrEnv (envAsBool, envAsInt)
-import System.Exit (exitFailure)
-import System.FilePath (joinPath, takeBaseName, takeExtension)
-import System.IO (hPutStrLn, stderr)
 import System.Process (ProcessHandle, createProcess, proc)
 import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 ((!))
@@ -63,6 +58,9 @@ buildFrontend =
 
 -- Config
 
+type StaticFiles = Map.Map FilePath Text
+
+
 data Config = Config
     { port :: Int
     , debug :: Bool
@@ -93,78 +91,6 @@ getConfig prefix =
         <*> pure Map.empty
 
 
--- Static Files
-
-{-| A map of static files with their original paths as keys and hashed paths
- as values.
--}
-type StaticFiles = Map.Map Text Text
-
-
--- | Hash static files and write them to the static file directory.
-hashStaticFiles :: Config -> IO StaticFiles
-hashStaticFiles cfg =
-    mapM (getHashAndWriteFile cfg.staticDir) cfg.staticFilesSources >>= \hashes ->
-        pure $ Map.fromList $ zip cfg.staticFilesSources hashes
-
-
-{-| Hash a file and write the file to disk with the hash in the filename.
- Errors fatally if a file cannot be hashed.
--}
-getHashAndWriteFile :: Text -> Text -> IO Text
-getHashAndWriteFile outputPath pathToFile =
-    logInfo ("Hashing " <> path <> "...")
-        >> tryReading path
-        >>= \case
-            Left except ->
-                exitWithErrorMessage ("Error reading file " <> path <> ": " <> show except)
-            Right bytes ->
-                getHashedFilename bytes >>= \hashedFilename ->
-                    doesFileExist hashedFilename >>= \case
-                        True ->
-                            logInfo ("Already hashed: " <> path <> " -> " <> hashedFilename)
-                                >> pure (convertString hashedFilename)
-                        False ->
-                            tryWriting hashedFilename bytes >>= \case
-                                Left except ->
-                                    exitWithErrorMessage ("Error hashing file: " <> path <> ": " <> show except)
-                                Right _ ->
-                                    logInfo ("Hashed: " <> path <> " -> " <> hashedFilename)
-                                        >> pure (convertString hashedFilename)
-    where
-        path :: String
-        path = convertString pathToFile
-
-        staticDir :: String
-        staticDir = convertString outputPath
-
-        tryReading :: String -> IO (Either IOError ByteString)
-        tryReading path' = try (readFile path')
-
-        tryWriting :: String -> ByteString -> IO (Either IOError ())
-        tryWriting path' bytes =
-            createDirectoryIfMissing True staticDir
-                >> try (writeFile path' bytes)
-
-        getHashedFilename :: ByteString -> IO FilePath
-        getHashedFilename bytes =
-            shortHash bytes >>= \hash ->
-                pure $
-                    joinPath
-                        [ staticDir
-                        , takeBaseName path <> "." <> hash <> takeExtension path
-                        ]
-
-
--- | Calculate a (truncated) SHA256 hash for a given byte string.
-shortHash :: (Applicative f) => ByteString -> f String
-shortHash bytes =
-    (hashlazy bytes :: Digest SHA256)
-        & show
-        & take 7
-        & pure
-
-
 -- Webserver
 
 -- | HTTP exceptions
@@ -185,16 +111,30 @@ handleException = S.Handler $ \case
 
 runWebserver :: Config -> IO ()
 runWebserver cfg =
-    hashStaticFiles newCfg >>= \staticFiles ->
-        S.scottyOptsT opts id (webserver cfg{staticFiles = staticFiles})
+    hashFiles staticFileInput >>= \case
+        Left err ->
+            -- Couldn't get hashed files. Exit fatally.
+            exitWithErrorMessage $ show err
+        Right hashedFiles ->
+            -- Got hashed files. Run the webserver.
+            let
+                staticFiles :: Map.Map FilePath Text
+                staticFiles = Map.map convertString hashedFiles
+            in
+                S.scottyOptsT opts id (webserver cfg{staticFiles = staticFiles})
     where
         -- In prod mode, also hash the generated CSS and JS files for
         -- cache-busting reasons.
+        newCfg :: Config
         newCfg =
             if cfg.debug
                 then cfg
                 else cfg{staticFilesSources = cfg.staticFilesSources ++ ["static/main.css", "static/main.js"]}
 
+        staticFileInput :: [FilePath]
+        staticFileInput = map convertString newCfg.staticFilesSources
+
+        opts :: S.Options
         opts =
             S.Options
                 { S.verbose = 0 -- disable star trek output
@@ -220,7 +160,9 @@ webserver cfg = do
 page :: StaticFiles -> Text -> Text -> H.Html -> LazyText.Text
 page staticFiles bodyClass title content =
     let
+        css :: Text
         css = Map.findWithDefault "/static/main.css" "static/main.css" staticFiles
+
         js = Map.findWithDefault "/static/main.js" "static/main.js" staticFiles
     in
         renderHtml $ H.docTypeHtml $ do
@@ -285,26 +227,6 @@ homePage staticFiles =
 
 
 -- Helpers
-
-exitWithErrorMessage :: String -> IO a
-exitWithErrorMessage =
-    (>> exitFailure) . printLnToStderr . ("[FATAL] " <>)
-
-
-logInfo :: String -> IO ()
-logInfo =
-    printLnToStderr . ("[INFO] " <>)
-
-
-logWarn :: String -> IO ()
-logWarn =
-    printLnToStderr . ("[WARN] " <>)
-
-
-printLnToStderr :: String -> IO ()
-printLnToStderr =
-    hPutStrLn stderr
-
 
 -- Convert an integer to Roman numerals.
 toRoman :: Int -> String
