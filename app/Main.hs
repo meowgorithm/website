@@ -222,8 +222,8 @@ homePage staticFiles =
         H.ul ! A.class_ "contact" $ do
             H.li $ H.a ! A.href "https://linkedin.com/in/meowgorithm" $ "LinkedIn"
             H.li $ H.a ! A.href "https://github.com/meowgorithm" $ "GitHub"
-            H.li $ H.a ! A.href "https://x.com/meowgorithm" $ "X/Twitter"
-        H.p $ H.text $ "Copyright © " <> convertString (toRoman 2024) <> " Christian Rocha"
+            H.li $ H.a ! A.href "https://x.com/meowgorithm" $ "X"
+        H.p $ H.text $ "Copyright © " <> convertString (toRoman 2025) <> " Christian Rocha"
 
 
 -- Helpers
