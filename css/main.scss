@@ -1,6 +1,6 @@
-@import "reset";
-@import "mixins";
-@import "fonts";
+@use "reset";
+@use "mixins";
+@use "fonts";
 
 :root {
   font-size: 22px;
