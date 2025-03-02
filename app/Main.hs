@@ -49,11 +49,12 @@ main = do
     return ()
 
 
--- | In debug mode (aka dev mode), run the frontenv dev server.
+-- | In debug mode (aka dev mode), also run the frontenv dev server.
 buildFrontend :: IO (Maybe Handle, Maybe Handle, Maybe Handle, ProcessHandle)
 buildFrontend =
-    createProcess (proc "npm" ["install"])
-        >> createProcess (proc "npm" ["start"])
+    npm "install" >> npm "start"
+    where
+        npm arg = createProcess $ proc "npm" [arg]
 
 
 -- Config
