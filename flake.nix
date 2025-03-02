@@ -12,7 +12,7 @@
     flake-utils,
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      ghcVersion = "ghc982";
+      ghcVersion = "ghc983";
 
       pkgs = nixpkgs.legacyPackages.${system};
 
