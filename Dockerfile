@@ -21,4 +21,5 @@ RUN cp -r static /static
 FROM alpine:latest
 COPY --from=server-builder /webserver /app/webserver
 COPY --from=asset-builder /static /app/static
+WORKDIR /app
 CMD ["/app/webserver"]

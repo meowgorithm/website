@@ -40,7 +40,7 @@ main :: IO ()
 main = do
     cfg <- getConfig "ROCHA_"
     printLnToStderr $ show cfg
-    logInfo $ "もしもし? Running webserver on port " ++ show cfg.port
+    logInfo $ "Running webserver on port " ++ show cfg.port
     _ <-
         runConcurrently $
             (,,)
