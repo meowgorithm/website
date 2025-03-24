@@ -1,0 +1,7 @@
+.direnv
+**/.git
+**/node_modules
+.parcel-cache
+static
+dist
+dist-newstyle
