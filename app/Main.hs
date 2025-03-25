@@ -153,7 +153,7 @@ webserver cfg = do
         S.html $ homePage cfg.staticFiles
 
     S.notFound $
-        S.status notFound404
+        S.throw NotFound
 
 
 -- Pages
