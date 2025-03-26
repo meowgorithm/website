@@ -13,6 +13,7 @@ body {
   padding: 3rem 4rem;
   color: #e4e5e1;
   background-color: #262626;
+  @include mixins.antialias;
 }
 a {
   text-decoration: none;
@@ -39,4 +40,13 @@ p + p {
 }
 footer {
   margin-top: 3rem;
+}
+
+body.error h1 {
+  font: 800 6rem/100% var(--sectraDisplay);
+  letter-spacing: -0.025em;
+  margin-bottom: 2rem;
+}
+body.error p {
+  font: 1.2rem/100% var(--linearSans);
 }
