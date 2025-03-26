@@ -4,6 +4,7 @@ RUN cabal install cabal-cache
 WORKDIR /usr/src/app
 COPY . .
 RUN cabal install --only-dependencies --overwrite-policy=always --keep-going
+ENV CABALOPTS="-static -optl-static -optl-pthread -fPIC"
 RUN cabal build --enable-executable-static --builddir ./build
 RUN cp `find ./build -type f -name "webserver"` /webserver
 
