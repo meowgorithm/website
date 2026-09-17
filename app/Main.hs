@@ -137,7 +137,7 @@ runWebserver cfg =
 
         opts :: S.Options
         opts =
-            S.Options
+            S.defaultOptions
                 { S.verbose = 0 -- disable star trek output
                 , S.settings = Warp.setPort cfg.port Warp.defaultSettings
                 }

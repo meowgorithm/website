@@ -22,7 +22,7 @@
 
       haskellPackages = pkgs.haskell.packages.${ghcVersion}.override {
         overrides = self: super: {
-          scotty = pkgs.haskell.lib.dontCheck (self.callHackage "scotty" "0.22" {});
+          scotty = pkgs.haskell.lib.dontCheck (self.callHackage "scotty" "0.30" {});
         };
       };
 
