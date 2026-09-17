@@ -3,6 +3,5 @@
 /result
 /bin/*
 **/node_modules/**
-/.parcel-cache/*
 /static/*
 .envrc

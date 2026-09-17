@@ -2,13 +2,14 @@
   "name": "rocha",
   "version": "1.0.0",
   "author": "Christian Rocha <christian@rocha.is>",
+  "type": "module",
   "scripts": {
-    "start": "parcel watch js/main.ts --dist-dir static --public-url /",
-    "build": "parcel build js/main.ts --dist-dir static --public-url /"
+    "start": "vite build --watch",
+    "build": "vite build"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "2.12.0",
-    "parcel": "2.12.0"
+    "sass": "^1.86.0",
+    "vite": "^8.0.0"
   },
   "dependencies": {
     "npm-check-updates": "^17.1.10"

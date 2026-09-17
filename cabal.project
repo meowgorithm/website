@@ -1,0 +1,5 @@
+packages: .
+
+-- Pin Hackage resolution so dependency solving is reproducible
+-- (locally and in the Docker build, which runs `cabal update` unpinned).
+index-state: hackage.haskell.org 2026-09-17T00:00:00Z
