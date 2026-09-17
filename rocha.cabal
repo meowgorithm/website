@@ -58,6 +58,10 @@ executable webserver
   -- Import common warning flags.
   import:           warnings
 
+  -- Warp's request timeouts need the timer manager, which requires
+  -- linking against the threaded runtime (hard error on GHC >= 9.10).
+  ghc-options:      -threaded
+
   -- .hs or .lhs file containing the Main module.
   main-is:          Main.hs
 
